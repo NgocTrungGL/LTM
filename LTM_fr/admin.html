@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Quản Lý Nội Thất</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🏠 Admin Panel - Quản Lý Nội Thất</h1>
+        <p>Hệ thống quản lý toàn diện cho cửa hàng nội thất</p>
+    </div>
+
+    <div class="nav">
+        <div class="nav-buttons">
+            <button class="nav-btn active" onclick="showSection('dashboard')">📊 Dashboard</button>
+            <button class="nav-btn" onclick="showSection('users')">👥 Người dùng</button>
+            <button class="nav-btn" onclick="showSection('categories')">📂 Danh mục</button>
+            <button class="nav-btn" onclick="showSection('products')">🛋️ Sản phẩm</button>
+            <button class="nav-btn" onclick="showSection('orders')">📋 Đơn hàng</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section active">
+            <div class="section-header">
+                <h2 class="section-title">📊 Tổng quan hệ thống</h2>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalUsers">0</div>
+                    <div class="stat-label">Người dùng</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalProducts">0</div>
+                    <div class="stat-label">Sản phẩm</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalOrders">0</div>
+                    <div class="stat-label">Đơn hàng</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalRevenue">0₫</div>
+                    <div class="stat-label">Doanh thu</div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+                <div>
+                    <h3>📈 Sản phẩm bán chạy</h3>
+                    <div id="topProducts"></div>
+                </div>
+                <div>
+                    <h3>📦 Tình trạng kho</h3>
+                    <div id="stockStatus"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Section -->
+        <div id="users" class="section">
+            <div class="section-header">
+                <h2 class="section-title">👥 Quản lý người dùng</h2>
+                <button class="btn btn-primary" onclick="openUserModal()">
+                    ➕ Thêm người dùng
+                </button>
+            </div>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="🔍 Tìm kiếm người dùng..." 
+                       onkeyup="searchTable('usersTable', this.value)">
+            </div>
+
+            <div class="table-container">
+                <table id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên đăng nhập</th>
+                            <th>Họ tên</th>
+                            <th>Email</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <!-- Data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Categories Section -->
+        <div id="categories" class="section">
+            <div class="section-header">
+                <h2 class="section-title">📂 Quản lý danh mục</h2>
+                <button class="btn btn-primary" onclick="openCategoryModal()">
+                    ➕ Thêm danh mục
+                </button>
+            </div>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="🔍 Tìm kiếm danh mục..." 
+                       onkeyup="searchTable('categoriesTable', this.value)">
+            </div>
+
+            <div class="table-container">
+                <table id="categoriesTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên danh mục</th>
+                            <th>Số sản phẩm</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categoriesTableBody">
+                        <!-- Data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Products Section -->
+        <div id="products" class="section">
+            <div class="section-header">
+                <h2 class="section-title">🛋️ Quản lý sản phẩm</h2>
+                <button class="btn btn-primary" onclick="openProductModal()">
+                    ➕ Thêm sản phẩm
+                </button>
+            </div>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="🔍 Tìm kiếm sản phẩm..." 
+                       onkeyup="searchTable('productsTable', this.value)">
+            </div>
+
+            <div class="table-container">
+                <table id="productsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Hình ảnh</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Danh mục</th>
+                            <th>Giá</th>
+                            <th>Tồn kho</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                        <!-- Data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Orders Section -->
+        <div id="orders" class="section">
+            <div class="section-header">
+                <h2 class="section-title">📋 Quản lý đơn hàng</h2>
+            </div>
+            
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="🔍 Tìm kiếm đơn hàng..." 
+                       onkeyup="searchTable('ordersTable', this.value)">
+            </div>
+
+            <div class="table-container">
+                <table id="ordersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Khách hàng</th>
+                            <th>Ngày đặt</th>
+                            <th>Tổng tiền</th>
+                            <th>Số sản phẩm</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <!-- Data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="userModalTitle">Thêm người dùng mới</h3>
+                <button class="close" onclick="closeModal('userModal')">&times;</button>
+            </div>
+            <form id="userForm">
+                <input type="hidden" id="userId">
+                <div class="form-group">
+                    <label class="form-label">Tên đăng nhập *</label>
+                    <input type="text" class="form-control" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mật khẩu *</label>
+                    <input type="password" class="form-control" id="password" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Họ tên</label>
+                    <input type="text" class="form-control" id="fullName">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email">
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('userModal')">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="categoryModalTitle">Thêm danh mục mới</h3>
+                <button class="close" onclick="closeModal('categoryModal')">&times;</button>
+            </div>
+            <form id="categoryForm">
+                <input type="hidden" id="categoryId">
+                <div class="form-group">
+                    <label class="form-label">Tên danh mục *</label>
+                    <input type="text" class="form-control" id="categoryName" required>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('categoryModal')">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="productModalTitle">Thêm sản phẩm mới</h3>
+                <button class="close" onclick="closeModal('productModal')">&times;</button>
+            </div>
+            <form id="productForm">
+                <input type="hidden" id="productId">
+                <div class="form-group">
+                    <label class="form-label">Tên sản phẩm *</label>
+                    <input type="text" class="form-control" id="productName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mô tả</label>
+                    <textarea class="form-control" id="productDescription" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Giá *</label>
+                    <input type="number" class="form-control" id="productPrice" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">URL hình ảnh</label>
+                    <input type="url" class="form-control" id="productImageUrl">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Số lượng tồn kho</label>
+                    <input type="number" class="form-control" id="productStock" value="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Danh mục *</label>
+                    <select class="form-control" id="productCategory" required>
+                        <option value="">Chọn danh mục</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('productModal')">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div id="orderDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Chi tiết đơn hàng</h3>
+                <button class="close" onclick="closeModal('orderDetailsModal')">&times;</button>
+            </div>
+            <div id="orderDetailsContent">
+                <!-- Order details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data - In real application, this would come from database
+        let users = [
+            {id: 1, username: 'admin', password: 'admin123', full_name: 'Quản trị viên', email: 'admin@furniture.com'},
+            {id: 2, username: 'user1', password: 'user123', full_name: 'Nguyễn Văn A', email: 'user1@email.com'},
+            {id: 3, username: 'user2', password: 'user123', full_name: 'Trần Thị B', email: 'user2@email.com'}
+        ];
+
+        let categories = [
+            {id: 1, name: 'Ghế'},
+            {id: 2, name: 'Sofa'},
+            {id: 3, name: 'Giường'},
+            {id: 4, name: 'Tủ'},
+            {id: 5, name: 'Bàn'},
+            {id: 6, name: 'Đèn'}
+        ];
+
+        let products = [
+            {id: 1, name: 'Ghế văn phòng cao cấp', description: 'Ghế văn phòng ergonomic', price: 2500000, image_url: '/api/placeholder/300/300', stock: 15, category_id: 1},
+            {id: 2, name: 'Sofa da thật 3 chỗ', description: 'Sofa da bò cao cấp', price: 15000000, image_url: '/api/placeholder/300/300', stock: 5, category_id: 2},
+            {id: 3, name: 'Giường ngủ gỗ sồi', description: 'Giường ngủ 1m8 gỗ sồi tự nhiên', price: 8000000, image_url: '/api/placeholder/300/300', stock: 8, category_id: 3},
+            {id: 4, name: 'Tủ quần áo 4 cánh', description: 'Tủ quần áo gỗ MDF', price: 6000000, image_url: '/api/placeholder/300/300', stock: 3, category_id: 4},
+            {id: 5, name: 'Bàn ăn 6 chỗ', description: 'Bàn ăn gỗ cao su', price: 4500000, image_url: '/api/placeholder/300/300', stock: 10, category_id: 5}
+        ];
+
+        let orders = [
+            {id: 1, user_id: 2, order_date: '2024-11-15 10:30:00', total_price: 17500000, details: [{product_id: 1, quantity: 2, price: 2500000}, {product_id: 2, quantity: 1, price: 15000000}]},
+            {id: 2, user_id: 3, order_date: '2024-11-16 14:20:00', total_price: 8000000, details: [{product_id: 3, quantity: 1, price: 8000000}]},
+            {id: 3, user_id: 2, order_date: '2024-11-17 09:15:00', total_price: 10500000, details: [{product_id: 4, quantity: 1, price: 6000000}, {product_id: 5, quantity: 1, price: 4500000}]}
+        ];
+
+        let nextUserId = 4;
+        let nextCategoryId = 7;
+        let nextProductId = 6;
+        let nextOrderId = 4;
+
+        // Navigation functions
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Load data for the section
+            loadSectionData(sectionId);
+        }
+
+        function loadSectionData(sectionId) {
+            switch(sectionId) {
+                case 'dashboard':
+                    loadDashboard();
+                    break;
+                case 'users':
+                    loadUsers();
+                    break;
+                case 'categories':
+                    loadCategories();
+                    break;
+                case 'products':
+                    loadProducts();
+                    break;
+                case 'orders':
+                    loadOrders();
+                    break;
+            }
+        }
+
+        // Dashboard functions
+        function loadDashboard() {
+            document.getElementById('totalUsers').textContent = users.length;
+            document.getElementById('totalProducts').textContent = products.length;
+            document.getElementById('totalOrders').textContent = orders.length;
+            
+            const totalRevenue = orders.reduce((sum, order) => sum + order.total_price, 0);
+            document.getElementById('totalRevenue').textContent = formatCurrency(totalRevenue);
+            
+            loadTopProducts();
+            loadStockStatus();
+        }
+
+        function loadTopProducts() {
+            const productSales = {};
+            orders.forEach(order => {
+                order.details.forEach(detail => {
+                    if (!productSales[detail.product_id]) {
+                        productSales[detail.product_id] = 0;
+                    }
+                    productSales[detail.product_id] += detail.quantity;
+                });
+            });
+
+            const topProducts = Object.entries(productSales)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 5)
+                .map(([productId, quantity]) => {
+                    const product = products.find(p => p.id == productId);
+                    return {product: product.name, quantity};
+                });
+
+            const html = topProducts.map(item => 
+                `<div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                    <span>${item.product}</span>
+                    <span class="badge badge-success">${item.quantity} đã bán</span>
+                </div>`
+            ).join('');
+
+            document.getElementById('topProducts').innerHTML = html;
+        }
+
+        function loadStockStatus() {
+            const lowStock = products.filter(p => p.stock < 5);
+            const outOfStock = products.filter(p => p.stock === 0);
+            
+            const html = `
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                    <span>Sắp hết hàng (< 5)</span>
+                    <span class="badge badge-warning">${lowStock.length} sản phẩm</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                    <span>Hết hàng</span>
+                    <span class="badge badge-danger">${outOfStock.length} sản phẩm</span>
+                </div>
+            `;
+            
+            document.getElementById('stockStatus').innerHTML = html;
+        }
+
+        // Users functions
+        function loadUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td>${user.id}</td>
+                    <td>${user.username}</td>
+                    <td>${user.full_name || '-'}</td>
+                    <td>${user.email || '-'}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editUser(${user.id})">✏️ Sửa</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">🗑️ Xóa</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openUserModal(userId = null) {
+            const modal = document.getElementById('userModal');
+            const form = document.getElementById('userForm');
+            
+            if (userId) {
+                const user = users.find(u => u.id === userId);
+                document.getElementById('userModalTitle').textContent = 'Sửa thông tin người dùng';
+                document.getElementById('userId').value = user.id;
+                document.getElementById('username').value = user.username;
+                document.getElementById('password').value = user.password;
+                document.getElementById('fullName').value = user.full_name || '';
+                document.getElementById('email').value = user.email || '';
+            } else {
+                document.getElementById('userModalTitle').textContent = 'Thêm người dùng mới';
+                form.reset();
+                document.getElementById('userId').value = '';
+            }
+            
+            modal.classList.add('show');
+        }
+
+        function editUser(userId) {
+            openUserModal(userId);
+        }
+
+        function deleteUser(userId) {
+            if (confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
+                users = users.filter(u => u.id !== userId);
+                loadUsers();
+                loadDashboard();
+            }
+        }
+
+        // Categories functions
+        function loadCategories() {
+            const tbody = document.getElementById('categoriesTableBody');
+            tbody.innerHTML = categories.map(category => {
+                const productCount = products.filter(p => p.category_id === category.id).length;
+                return `
+                    <tr>
+                        <td>${category.id}</td>
+                        <td>${category.name}</td>
+                        <td>${productCount}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="editCategory(${category.id})">✏️ Sửa</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteCategory(${category.id})">🗑️ Xóa</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openCategoryModal(categoryId = null) {
+            const modal = document.getElementById('categoryModal');
+            const form = document.getElementById('categoryForm');
+            
+            if (categoryId) {
+                const category = categories.find(c => c.id === categoryId);
+                document.getElementById('categoryModalTitle').textContent = 'Sửa danh mục';
+                document.getElementById('categoryId').value = category.id;
+                document.getElementById('categoryName').value = category.name;
+            } else {
+                document.getElementById('categoryModalTitle').textContent = 'Thêm danh mục mới';
+                form.reset();
+                document.getElementById('categoryId').value = '';
+            }
+            
+            modal.classList.add('show');
+        }
+
+        function editCategory(categoryId) {
+            openCategoryModal(categoryId);
+        }
+
+        function deleteCategory(categoryId) {
+            const hasProducts = products.some(p => p.category_id === categoryId);
+            if (hasProducts) {
+                alert('Không thể xóa danh mục này vì còn sản phẩm thuộc danh mục!');
+                return;
+            }
+            
+            if (confirm('Bạn có chắc chắn muốn xóa danh mục này?')) {
+                categories = categories.filter(c => c.id !== categoryId);
+                loadCategories();
+                loadDashboard();
+            }
+        }
+
+        // Products functions
+        function loadProducts() {
+            const tbody = document.getElementById('productsTableBody');
+            tbody.innerHTML = products.map(product => {
+                const category = categories.find(c => c.id === product.category_id);
+                const stockStatus = product.stock === 0 ? 'badge-danger' : 
+                                  product.stock < 5 ? 'badge-warning' : 'badge-success';
+                const stockText = product.stock === 0 ? 'Hết hàng' : 
+                                 product.stock < 5 ? 'Sắp hết' : 'Còn hàng';
+                
+                return `
+                    <tr>
+                        <td>${product.id}</td>
+                        <td>
+                            <img src="${product.image_url || '/api/placeholder/50/50'}" 
+                                 alt="${product.name}" class="product-image">
+                        </td>
+                        <td>${product.name}</td>
+                        <td>${category ? category.name : '-'}</td>
+                        <td>${formatCurrency(product.price)}</td>
+                        <td>${product.stock}</td>
+                        <td><span class="badge ${stockStatus}">${stockText}</span></td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="editProduct(${product.id})">✏️ Sửa</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteProduct(${product.id})">🗑️ Xóa</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openProductModal(productId = null) {
+            const modal = document.getElementById('productModal');
+            const form = document.getElementById('productForm');
+            const categorySelect = document.getElementById('productCategory');
+            
+            // Populate category dropdown
+            categorySelect.innerHTML = '<option value="">Chọn danh mục</option>' + 
+                categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            
+            if (productId) {
+                const product = products.find(p => p.id === productId);
+                document.getElementById('productModalTitle').textContent = 'Sửa sản phẩm';
+                document.getElementById('productId').value = product.id;
+                document.getElementById('productName').value = product.name;
+                document.getElementById('productDescription').value = product.description || '';
+                document.getElementById('productPrice').value = product.price;
+                document.getElementById('productImageUrl').value = product.image_url || '';
+                document.getElementById('productStock').value = product.stock;
+                document.getElementById('productCategory').value = product.category_id;
+            } else {
+                document.getElementById('productModalTitle').textContent = 'Thêm sản phẩm mới';
+                form.reset();
+                document.getElementById('productId').value = '';
+            }
+            
+            modal.classList.add('show');
+        }
+
+        function editProduct(productId) {
+            openProductModal(productId);
+        }
+
+        function deleteProduct(productId) {
+            if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+                products = products.filter(p => p.id !== productId);
+                loadProducts();
+                loadDashboard();
+            }
+        }
+
+        // Orders functions
+        function loadOrders() {
+            const tbody = document.getElementById('ordersTableBody');
+            tbody.innerHTML = orders.map(order => {
+                const user = users.find(u => u.id === order.user_id);
+                const itemCount = order.details.reduce((sum, detail) => sum + detail.quantity, 0);
+                
+                return `
+                    <tr>
+                        <td>${order.id}</td>
+                        <td>${user ? user.full_name || user.username : 'N/A'}</td>
+                        <td>${formatDateTime(order.order_date)}</td>
+                        <td>${formatCurrency(order.total_price)}</td>
+                        <td>${itemCount}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm" onclick="viewOrderDetails(${order.id})">👁️ Chi tiết</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteOrder(${order.id})">🗑️ Xóa</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function viewOrderDetails(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            const user = users.find(u => u.id === order.user_id);
+            
+            const detailsHtml = order.details.map(detail => {
+                const product = products.find(p => p.id === detail.product_id);
+                return `
+                    <tr>
+                        <td>${product ? product.name : 'N/A'}</td>
+                        <td>${detail.quantity}</td>
+                        <td>${formatCurrency(detail.price)}</td>
+                        <td>${formatCurrency(detail.quantity * detail.price)}</td>
+                    </tr>
+                `;
+            }).join('');
+            
+            const content = `
+                <div style="margin-bottom: 1rem;">
+                    <strong>Đơn hàng #${order.id}</strong><br>
+                    <strong>Khách hàng:</strong> ${user ? user.full_name || user.username : 'N/A'}<br>
+                    <strong>Email:</strong> ${user ? user.email || '-' : 'N/A'}<br>
+                    <strong>Ngày đặt:</strong> ${formatDateTime(order.order_date)}<br>
+                    <strong>Tổng tiền:</strong> ${formatCurrency(order.total_price)}
+                </div>
+                
+                <h4>Chi tiết sản phẩm:</h4>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                    <thead>
+                        <tr style="background: #f8f9fa;">
+                            <th style="padding: 0.5rem; border: 1px solid #dee2e6;">Sản phẩm</th>
+                            <th style="padding: 0.5rem; border: 1px solid #dee2e6;">Số lượng</th>
+                            <th style="padding: 0.5rem; border: 1px solid #dee2e6;">Đơn giá</th>
+                            <th style="padding: 0.5rem; border: 1px solid #dee2e6;">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${detailsHtml}
+                    </tbody>
+                </table>
+            `;
+            
+            document.getElementById('orderDetailsContent').innerHTML = content;
+            document.getElementById('orderDetailsModal').classList.add('show');
+        }
+
+        function deleteOrder(orderId) {
+            if (confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')) {
+                orders = orders.filter(o => o.id !== orderId);
+                loadOrders();
+                loadDashboard();
+            }
+        }
+
+        // Form handlers
+        document.getElementById('userForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const userId = document.getElementById('userId').value;
+            const userData = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                full_name: document.getElementById('fullName').value,
+                email: document.getElementById('email').value
+            };
+            
+            if (userId) {
+                // Update existing user
+                const index = users.findIndex(u => u.id == userId);
+                users[index] = { ...users[index], ...userData };
+            } else {
+                // Add new user
+                users.push({ id: nextUserId++, ...userData });
+            }
+            
+            closeModal('userModal');
+            loadUsers();
+            loadDashboard();
+        });
+
+        document.getElementById('categoryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const categoryId = document.getElementById('categoryId').value;
+            const categoryData = {
+                name: document.getElementById('categoryName').value
+            };
+            
+            if (categoryId) {
+                // Update existing category
+                const index = categories.findIndex(c => c.id == categoryId);
+                categories[index] = { ...categories[index], ...categoryData };
+            } else {
+                // Add new category
+                categories.push({ id: nextCategoryId++, ...categoryData });
+            }
+            
+            closeModal('categoryModal');
+            loadCategories();
+            loadProducts(); // Refresh products to show updated category names
+        });
+
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const productId = document.getElementById('productId').value;
+            const productData = {
+                name: document.getElementById('productName').value,
+                description: document.getElementById('productDescription').value,
+                price: parseFloat(document.getElementById('productPrice').value),
+                image_url: document.getElementById('productImageUrl').value,
+                stock: parseInt(document.getElementById('productStock').value),
+                category_id: parseInt(document.getElementById('productCategory').value)
+            };
+            
+            if (productId) {
+                // Update existing product
+                const index = products.findIndex(p => p.id == productId);
+                products[index] = { ...products[index], ...productData };
+            } else {
+                // Add new product
+                products.push({ id: nextProductId++, ...productData });
+            }
+            
+            closeModal('productModal');
+            loadProducts();
+            loadDashboard();
+        });
+
+        // Modal functions
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // Search function
+        function searchTable(tableId, searchTerm) {
+            const table = document.getElementById(tableId);
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.getElementsByTagName('td');
+                let found = false;
+                
+                for (let j = 0; j < cells.length - 1; j++) { // Exclude action column
+                    if (cells[j].textContent.toLowerCase().includes(searchTerm.toLowerCase())) {
+                        found = true;
+                        break;
+                    }
+                }
+                
+                row.style.display = found ? '' : 'none';
+            }
+        }
+
+        // Utility functions
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(amount);
+        }
+
+        function formatDateTime(dateString) {
+            return new Date(dateString).toLocaleString('vi-VN');
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.classList.remove('show');
+                }
+            });
+        });
+
+        // Initialize dashboard on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboard();
+        });
