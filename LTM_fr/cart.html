@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán - Nội Thất Sang Trọng</title>
+     <link rel="stylesheet" href="cart.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="checkout-header">
+        <div class="header-content">
+            <a href="index.html" class="logo">Nội<span>Thất</span></a>
+            
+            <div class="checkout-steps">
+                <div class="step completed">
+                    <span class="step-number">1</span>
+                    <span>Giỏ hàng</span>
+                </div>
+                <div class="step active">
+                    <span class="step-number">2</span>
+                    <span>Thanh toán</span>
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <span>Hoàn tất</span>
+                </div>
+            </div>
+
+            <button class="back-btn" onclick="goBack()">
+                ← Quay lại giỏ hàng
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="checkout-container">
+        <!-- Checkout Form -->
+        <div class="checkout-form">
+            <form id="checkoutForm">
+                <!-- Shipping Information -->
+                <div class="form-section">
+                    <h3 class="section-title">Thông tin giao hàng</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">Họ <span class="required">*</span></label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Tên <span class="required">*</span></label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Email <span class="required">*</span></label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Số điện thoại <span class="required">*</span></label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Địa chỉ <span class="required">*</span></label>
+                        <input type="text" id="address" name="address" placeholder="Số nhà, tên đường" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city">Tỉnh/Thành phố <span class="required">*</span></label>
+                            <select id="city" name="city" required onchange="updateDistricts()">
+                                <option value="">Chọn tỉnh/thành phố</option>
+                                <option value="hcm">TP. Hồ Chí Minh</option>
+                                <option value="hanoi">Hà Nội</option>
+                                <option value="danang">Đà Nẵng</option>
+                                <option value="cantho">Cần Thơ</option>
+                                <option value="haiphong">Hải Phòng</option>
+                                <option value="binhduong">Bình Dương</option>
+                                <option value="dongnai">Đồng Nai</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="district">Quận/Huyện <span class="required">*</span></label>
+                            <select id="district" name="district" required>
+                                <option value="">Chọn quận/huyện</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Ghi chú đơn hàng</label>
+                        <textarea id="notes" name="notes" rows="3" placeholder="Ghi chú về đơn hàng, ví dụ: giao hàng trong giờ hành chính..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="form-section">
+                    <h3 class="section-title">Phương thức thanh toán</h3>
+                    
+                    <div class="payment-methods">
+                        <div class="payment-method active" data-method="cod" onclick="selectPayment('cod')">
+                            <div class="payment-icon">💵</div>
+                            <div class="payment-name">Thanh toán khi nhận hàng</div>
+                            <div class="payment-description">Trả tiền mặt khi nhận hàng</div>
+                        </div>
+                        
+                        <div class="payment-method" data-method="bank" onclick="selectPayment('bank')">
+                            <div class="payment-icon">🏦</div>
+                            <div class="payment-name">Chuyển khoản ngân hàng</div>
+                            <div class="payment-description">Chuyển khoản trước khi giao</div>
+                        </div>
+                        
+                        <div class="payment-method" data-method="momo" onclick="selectPayment('momo')">
+                            <div class="payment-icon">📱</div>
+                            <div class="payment-name">Ví MoMo</div>
+                            <div class="payment-description">Thanh toán qua ví điện tử</div>
+                        </div>
+                        
+                        <div class="payment-method" data-method="card" onclick="selectPayment('card')">
+                            <div class="payment-icon">💳</div>
+                            <div class="payment-name">Thẻ tín dụng/ghi nợ</div>
+                            <div class="payment-description">Visa, MasterCard, JCB</div>
+                        </div>
+                    </div>
+
+                    <!-- Card Details -->
+                    <div class="card-details" id="cardDetails">
+                        <h4 style="margin-bottom: 15px; color: var(--dark-color);">Thông tin thẻ</h4>
+                        <div class="form-group">
+                            <label for="cardNumber">Số thẻ <span class="required">*</span></label>
+                            <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="expiry">Ngày hết hạn <span class="required">*</span></label>
+                                <input type="text" id="expiry" name="expiry" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div class="form-group">
+                                <label for="cvv">CVV <span class="required">*</span></label>
+                                <input type="text" id="cvv" name="cvv" placeholder="123" maxlength="4">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardName">Tên chủ thẻ <span class="required">*</span></label>
+                            <input type="text" id="cardName" name="cardName" placeholder="NGUYEN VAN A">
+                        </div>
+                    </div>
+
+                    <!-- Bank Transfer Details -->
+                    <div class="card-details" id="bankDetails">
+                        <h4 style="margin-bottom: 15px; color: var(--dark-color);">Thông tin chuyển khoản</h4>
+                        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px;">
+                            <p><strong>Ngân hàng:</strong> Vietcombank</p>
+                            <p><strong>Số tài khoản:</strong> 1234567890</p>
+                            <p><strong>Chủ tài khoản:</strong> CONG TY NOI THAT</p>
+                            <p><strong>Nội dung:</strong> [Mã đơn hàng] + Họ tên</p>
+                            <p style="color: #dc3545; margin-top: 10px; font-size: 14px;">
+                                <strong>Lưu ý:</strong> Vui lòng chuyển khoản đúng số tiền và ghi rõ nội dung để chúng tôi xử lý đơn hàng nhanh chóng.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="security-info">
+                        <span class="security-icon">🔒</span>
+                        <span class="security-text">Thông tin của bạn được bảo mật và mã hóa SSL 256-bit</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large">
+                    <span id="orderButtonText">Hoàn tất đơn hàng</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-summary">
+            <h3 class="summary-title">Tóm tắt đơn hàng</h3>
+            
+            <div id="orderItems">
+                <!-- Sample items - will be populated by JavaScript -->
+                <div class="order-item">
+                    <img src="/api/placeholder/60/60" alt="Ghế Sofa Scandinavian" class="item-image">
+                    <div class="item-info">
+                        <div class="item-name">Ghế Sofa Scandinavian</div>
+                        <div class="item-details">Số lượng: 1</div>
+                    </div>
+                    <div class="item-price">5.900.000₫</div>
+                </div>
+                
+                <div class="order-item">
+                    <img src="/api/placeholder/60/60" alt="Bàn ăn gỗ sồi" class="item-image">
+                    <div class="item-info">
+                        <div class="item-name">Bàn ăn gỗ sồi</div>
+                        <div class="item-details">Số lượng: 1</div>
+                    </div>
+                    <div class="item-price">7.500.000₫</div>
+                </div>
+            </div>
+
+            <div class="discount-code">
+                <h4 style="margin-bottom: 15px; color: var(--dark-color);">Mã giảm giá</h4>
+                <div class="discount-input">
+                    <input type="text" placeholder="Nhập mã giảm giá" id="discountCode">
+                    <button type="button" class="apply-btn" onclick="applyDiscount()">Áp dụng</button>
+                </div>
+            </div>
+
+            <div class="summary-line">
+                <span>Tạm tính:</span>
+                <span id="subtotal">13.400.000₫</span>
+            </div>
+            
+            <div class="summary-line">
+                <span>Phí vận chuyển:</span>
+                <span id="shippingFee">Miễn phí</span>
+            </div>
+            
+            <div class="summary-line" id="discountLine" style="display: none;">
+                <span>Giảm giá:</span>
+                <span id="discountAmount">-0₫</span>
+            </div>
+            
+            <div class="summary-line">
+                <span>Tổng cộng:</span>
+                <span id="totalAmount">13.400.000₫</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="success-modal" id="successModal">
+        <div class="success-content">
+            <div class="success-icon">✅</div>
+            <h3 class="success-title">Đặt hàng thành công!</h3>
+            <p class="success-message">
+                Cảm ơn bạn đã mua sắm tại Nội Thất. Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất để xác nhận đơn hàng.
+            </p>
+            <div class="order-number">
+                Mã đơn hàng: <span id="orderNumber">#NH2024001</span>
+            </div>
+            <div style="display: flex; gap: 15px;">
+                <button class="btn btn-outline" onclick="goToHome()">Về trang chủ</button>
+                <button class="btn btn-primary" onclick="trackOrder()">Theo dõi đơn hàng</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const cityDistricts = {
+        'hcm': ['Quận 1', 'Quận 2', 'Quận 3', 'Quận 4', 'Quận 5', 'Quận 6', 'Quận 7', 'Quận 8', 'Quận 9', 'Quận 10', 'Quận 11', 'Quận 12', 'Bình Thạnh', 'Gò Vấp', 'Phú Nhuận', 'Tân Bình', 'Tân Phú', 'Thủ Đức'],
+        'hanoi': ['Ba Đình', 'Hoàn Kiếm', 'Tây Hồ', 'Long Biên', 'Cầu Giấy', 'Đống Đa', 'Hai Bà Trưng', 'Hoàng Mai', 'Thanh Xuân', 'Sóc Sơn', 'Đông Anh', 'Gia Lâm', 'Nam Từ Liêm', 'Bắc Từ Liêm'],
+        'danang': ['Hải Châu', 'Thanh Khê', 'Sơn Trà', 'Ngũ Hành Sơn', 'Liên Chiểu', 'Cẩm Lệ', 'Hòa Vang', 'Hoàng Sa'],
+        'cantho': ['Ninh Kiều', 'Ô Môn', 'Bình Thuỷ', 'Cái Răng', 'Thốt Nốt', 'Vĩnh Thạnh', 'Cờ Đỏ', 'Phong Điền', 'Thới Lai'],
+        'haiphong': ['Hồng Bàng', 'Ngô Quyền', 'Lê Chân', 'Hải An', 'Kiến An', 'Đồ Sơn', 'Dương Kinh', 'Thuỷ Nguyên'],
+        'binhduong': ['Thủ Dầu Một', 'Dĩ An', 'Thuận An', 'Tân Uyên', 'Bàu Bàng', 'Bến Cát', 'Phú Giáo', 'Dầu Tiếng', 'Bắc Tân Uyên'],
+        'dongnai': ['Biên Hòa', 'Long Khánh', 'Tân Phú', 'Vĩnh Cửu', 'Định Quán', 'Trảng Bom', 'Thống Nhất', 'Cẩm Mỹ', 'Xuân Lộc', 'Nhơn Trạch']
+    };
+
+    function updateDistricts() {
+        const citySelect = document.getElementById("city");
+        const districtSelect = document.getElementById("district");
+        const selectedCity = citySelect.value;
+
+        // Xóa toàn bộ quận/huyện hiện tại
+        districtSelect.innerHTML = '<option value="">Chọn quận/huyện</option>';
+
+        if (cityDistricts[selectedCity]) {
+            cityDistricts[selectedCity].forEach(function(district) {
+                const option = document.createElement("option");
+                option.value = district.toLowerCase().replace(/\s+/g, '-');
+                option.textContent = district;
+                districtSelect.appendChild(option);
+            });
+        }
+    }
+</script>

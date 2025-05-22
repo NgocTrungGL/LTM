@@ -1,0 +1,77 @@
+package dao;
+
+import model.Order;
+import util.DBUtil;
+
+import java.sql.*;
+import java.util.*;
+
+public class OrderDAO {
+  
+    private Connection conn;
+
+    public OrderDAO() throws SQLException {
+        conn = DBUtil.getConnection();
+    }
+    public List<Order> getAllOrders() {
+        List<Order> list = new ArrayList<>();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM orders");
+            while (rs.next()) {
+                list.add(new Order(
+                    rs.getInt("id"),
+                    rs.getInt("user_id"),
+                    rs.getTimestamp("order_date"),
+                    rs.getDouble("total_price")
+                ));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return list;
+    }
+
+    public void insertOrder(Order o) {
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                "INSERT INTO orders (user_id, total_price) VALUES (?, ?)");
+            ps.setInt(1, o.getUserId());
+            ps.setDouble(2, o.getTotalPrice());
+            ps.executeUpdate();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    public void updateOrder(Order o) {
+        try {
+            PreparedStatement ps = conn.prepareStatement(
+                "UPDATE orders SET user_id=?, total_price=? WHERE id=?");
+            ps.setInt(1, o.getUserId());
+            ps.setDouble(2, o.getTotalPrice());
+            ps.setInt(3, o.getId());
+            ps.executeUpdate();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    public void deleteOrder(int id) {
+        try {
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM orders WHERE id=?");
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    public Order getOrderById(int id) {
+        try {
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM orders WHERE id=?");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Order(
+                    rs.getInt("id"),
+                    rs.getInt("user_id"),
+                    rs.getTimestamp("order_date"),
+                    rs.getDouble("total_price"));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return null;
+    }
+}

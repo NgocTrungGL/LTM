@@ -1,0 +1,45 @@
+package controller;
+
+import dao.OrderDAO;
+import model.Order;
+
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import java.io.IOException;
+import java.util.List;
+
+public class OrderServlet extends HttpServlet {
+    private OrderDAO dao = new OrderDAO();
+
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        String action = req.getParameter("action");
+        if ("edit".equals(action)) {
+            int id = Integer.parseInt(req.getParameter("id"));
+            Order order = dao.getOrderById(id);
+            req.setAttribute("order", order);
+            req.getRequestDispatcher("edit-order.jsp").forward(req, res);
+        } else if ("delete".equals(action)) {
+            int id = Integer.parseInt(req.getParameter("id"));
+            dao.deleteOrder(id);
+            res.sendRedirect("OrderServlet");
+        } else {
+            List<Order> list = dao.getAllOrders();
+            req.setAttribute("orders", list);
+            req.getRequestDispatcher("list-orders.jsp").forward(req, res);
+        }
+    }
+
+    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        int userId = Integer.parseInt(req.getParameter("userId"));
+        double total = Double.parseDouble(req.getParameter("totalPrice"));
+        String idStr = req.getParameter("id");
+
+        if (idStr == null || idStr.isEmpty()) {
+            dao.insertOrder(new Order(0, userId, null, total));
+        } else {
+            int id = Integer.parseInt(idStr);
+            dao.updateOrder(new Order(id, userId, null, total));
+        }
+        res.sendRedirect("OrderServlet");
+    }
+}

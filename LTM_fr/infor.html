@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông Tin Cá Nhân - Nội Thất Sang Trọng</title>
+     <link rel="stylesheet" href="infor.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="top-nav">
+            <a href="index.html" class="logo">Nội<span>Thất</span></a>
+            <div class="nav-links">
+                <a href="index.html">Trang chủ</a>
+                <a href="#">Sản phẩm</a>
+                <a href="#">Bộ sưu tập</a>
+                <a href="#">Về chúng tôi</a>
+                <a href="#" class="active">Tài khoản</a>
+            </div>
+            <div class="user-info">
+                <img src="/api/placeholder/40/40" alt="Avatar" class="user-avatar">
+                <span class="user-name">Nguyễn Văn A</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="profile-container">
+        <!-- Sidebar -->
+        <div class="profile-sidebar">
+            <div class="sidebar-header">
+                <img src="/api/placeholder/100/100" alt="Profile Avatar" class="profile-avatar" id="profileAvatar">
+                <div class="profile-name" id="profileName">Nguyễn Văn A</div>
+                <div class="profile-email" id="profileEmail">nguyenvana@email.com</div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" onclick="showTab('profile')"><span class="icon">👤</span>Thông tin cá nhân</a></li>
+                <li><a href="#" onclick="showTab('addresses')"><span class="icon">📍</span>Địa chỉ giao hàng</a></li>
+                <li><a href="#" onclick="showTab('orders')"><span class="icon">📦</span>Lịch sử đơn hàng</a></li>
+                <li><a href="#" onclick="showTab('security')"><span class="icon">🔒</span>Bảo mật</a></li>
+                <li><a href="#" onclick="showTab('preferences')"><span class="icon">⚙️</span>Tùy chọn</a></li>
+                <li><a href="#" onclick="logout()"><span class="icon">🚪</span>Đăng xuất</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="profile-content">
+            <div class="content-header">
+                <h2 class="content-title" id="contentTitle">Thông tin cá nhân</h2>
+                <p class="content-description" id="contentDescription">
+                    Quản lý thông tin cá nhân của bạn để có trải nghiệm mua sắm tốt nhất
+                </p>
+            </div>
+
+            <div class="content-body">
+                <!-- Profile Tab -->
+                <div class="tab-content active" id="profileTab">
+                    <div class="tabs">
+                        <button class="tab-button active" onclick="showSubTab('basic-info')">Thông tin cơ bản</button>
+                        <button class="tab-button" onclick="showSubTab('contact-info')">Thông tin liên hệ</button>
+                    </div>
+
+                    <!-- Basic Info -->
+                    <div class="tab-content active" id="basic-info">
+                        <form id="basicInfoForm">
+                            <div class="form-section">
+                                <h3 class="section-title">Thông tin cá nhân</h3>
+                                
+                                <div class="form-group">
+                                    <label>Ảnh đại diện</label>
+                                    <div class="file-upload">
+                                        <input type="file" id="avatarInput" accept="image/*" onchange="previewAvatar(event)">
+                                        <div class="file-upload-label">
+                                            <span>📷</span>
+                                            <span>Chọn ảnh đại diện</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="firstName">Họ <span class="required">*</span></label>
+                                        <input type="text" id="firstName" name="firstName" value="Nguyễn" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="lastName">Tên <span class="required">*</span></label>
+                                        <input type="text" id="lastName" name="lastName" value="Văn A" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="birthDate">Ngày sinh</label>
+                                        <input type="date" id="birthDate" name="birthDate" value="1990-01-15">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="gender">Giới tính</label>
+                                        <select id="gender" name="gender">
+                                            <option value="">Chọn giới tính</option>
+                                            <option value="male" selected>Nam</option>
+                                            <option value="female">Nữ</option>
+                                            <option value="other">Khác</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                                <button type="button" class="btn btn-outline" onclick="resetForm('basicInfoForm')">Hủy bỏ</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Contact Info -->
+                    <div class="tab-content" id="contact-info">
+                        <form id="contactInfoForm">
+                            <div class="form-section">
+                                <h3 class="section-title">Thông tin liên hệ</h3>
+                                
+                                <div class="form-group">
+                                    <label for="email">Email <span class="required">*</span></label>
+                                    <input type="email" id="email" name="email" value="nguyenvana@email.com" required>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="phone">Số điện thoại <span class="required">*</span></label>
+                                        <input type="tel" id="phone" name="phone" value="0901234567" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="alternatePhone">Số điện thoại phụ</label>
+                                        <input type="tel" id="alternatePhone" name="alternatePhone">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="company">Công ty</label>
+                                    <input type="text" id="company" name="company" placeholder="Tên công ty (không bắt buộc)">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="jobTitle">Chức vụ</label>
+                                    <input type="text" id="jobTitle" name="jobTitle" placeholder="Chức vụ (không bắt buộc)">
+                                </div>
+                            </div>
+
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                                <button type="button" class="btn btn-outline" onclick="resetForm('contactInfoForm')">Hủy bỏ</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Addresses Tab -->
+                <div class="tab-content" id="addressesTab">
+                    <div class="form-section">
+                        <h3 class="section-title">Địa chỉ giao hàng</h3>
+                        
+                        <div class="address-list" id="addressList">
+                            <!-- Default Address -->
+                            <div class="address-card default">
+                                <div class="address-header">
+                                    <div class="address-type">
+                                        🏠 Nhà riêng
+                                        <span class="default-badge">Mặc định</span>
+                                    </div>
+                                    <div class="address-actions">
+                                        <button class="btn btn-secondary" onclick="editAddress(0)">Sửa</button>
+                                        <button class="btn btn-outline" onclick="removeAddress(0)">Xóa</button>
+                                    </div>
+                                </div>
+                                <div class="address-info">
+                                    <strong>Nguyễn Văn A</strong><br>
+                                    0901234567<br>
+                                    123 Đường ABC, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh
+                                </div>
+                            </div>
+
+                            <!-- Work Address -->
+                            <div class="address-card">
+                                <div class="address-header">
+                                    <div class="address-type">
+                                        🏢 Văn phòng
+                                    </div>
+                                    <div class="address-actions">
+                                        <button class="btn btn-secondary" onclick="setDefaultAddress(1)">Đặt mặc định</button>
+                                        <button class="btn btn-secondary" onclick="editAddress(1)">Sửa</button>
+                                        <button class="btn btn-outline" onclick="removeAddress(1)">Xóa</button>
+                                    </div>
+                                </div>
+                                <div class="address-info">
+                                    <strong>Nguyễn Văn A</strong><br>
+                                    0901234567<br>
+                                    456 Đường XYZ, Phường Đa Kao, Quận 1, TP. Hồ Chí Minh
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="showAddAddressForm()">+ Thêm địa chỉ mới</button>
+                    </div>
+
+                    <!-- Add Address Form (Hidden by default) -->
+                    <div class="form-section" id="addAddressForm" style="display: none;">
+                        <h3 class="section-title">Thêm địa chỉ mới</h3>
+                        
+                        <form id="newAddressForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="newFirstName">Họ <span class="required">*</span></label>
+                                    <input type="text" id="newFirstName" name="firstName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="newLastName">Tên <span class="required">*</span></label>
+                                    <input type="text" id="newLastName" name="lastName" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="newPhone">Số điện thoại <span class="required">*</span></label>
+                                <input type="tel" id="newPhone" name="phone" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="newAddress">Địa chỉ <span class="required">*</span></label>
+                                <input type="text" id="newAddress" name="address" placeholder="Số nhà, tên đường" required>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="newCity">Tỉnh/Thành phố <span class="required">*</span></label>
+                                    <select id="newCity" name="city" required onchange="updateNewDistricts()">
+                                        <option value="">Chọn tỉnh/thành phố</option>
+                                        <option value="hcm">TP. Hồ Chí Minh</option>
+                                        <option value="hanoi">Hà Nội</option>
+                                        <option value="danang">Đà Nẵng</option>
+                                        <option value="cantho">Cần Thơ</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="newDistrict">Quận/Huyện <span class="required">*</span></label>
+                                    <select id="newDistrict" name="district" required>
+                                        <option value="">Chọn quận/huyện</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="addressType">Loại địa chỉ</label>
+                                <select id="addressType" name="type">
+                                    <option value="home">🏠 Nhà riêng</option>
+                                    <option value="office">🏢 Văn phòng</option>
+                                    <option value="other">📍 Khác</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="setAsDefault" name="setAsDefault">
+                                    Đặt làm địa chỉ mặc định
+                                </label>
+                            </div>
+
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-primary">Lưu địa chỉ
